@@ -1,3 +1,5 @@
+import { submitButtonClick } from "commands/common";
+
 const scheduleDropdown = "div[data-testid='scheduleData']";
 const scheduleValue = (value: string) => `div[data-testid='${value}']`;
 const destinationPrefix = "input[data-testid='prefixInput']";
@@ -17,11 +19,15 @@ const primaryKeyText = "[class^='PathPopoutButton_button__']";
 const preFilledPrimaryKeyText = "div[class^='PathPopout_text']";
 const primaryKeyDropdown = "button[class^='PathPopoutButton_button']";
 const successResult = "div[data-id='success-result']";
+const resetModalResetCheckbox = "[data-testid='resetModal-reset-checkbox']";
 const saveStreamChangesButton = "button[data-testid='resetModal-save']";
 const connectionNameInput = "input[data-testid='connectionName']";
 const refreshSourceSchemaButton = "button[data-testid='refresh-source-schema-btn']";
 const streamSyncEnabledSwitch = (streamName: string) => `[data-testid='${streamName}-stream-sync-switch']`;
 const streamNameInput = "input[data-testid='input']";
+const schemaChangesDetectedBanner = "[data-testid='schemaChangesDetected']";
+const schemaChangesReviewButton = "[data-testid='schemaChangesReviewButton']";
+const schemaChangesBackdrop = "[data-testid='schemaChangesBackdrop']";
 
 export const goToReplicationTab = () => {
   cy.get(replicationTab).click();
@@ -116,14 +122,43 @@ export const searchStream = (value: string) => {
   cy.get(streamNameInput).type(value);
 };
 
+export const clickSaveReplication = () => {
+  cy.intercept("/api/v1/web_backend/connections/update").as("updateConnection");
+
+  submitButtonClick();
+
+  confirmStreamConfigurationChangedPopup();
+
+  cy.wait("@updateConnection").then((interception) => {
+    assert.isNotNull(interception.response?.statusCode, "200");
+  });
+
+  checkSuccessResult();
+};
+
 export const checkSuccessResult = () => {
   cy.get(successResult).should("exist");
 };
 
 export const confirmStreamConfigurationChangedPopup = () => {
+  cy.get(resetModalResetCheckbox).click({ force: true });
   cy.get(saveStreamChangesButton).click();
 };
 
 export const toggleStreamEnabledState = (streamName: string) => {
   cy.get(streamSyncEnabledSwitch(streamName)).check({ force: true });
+};
+
+export const checkSchemaChangesDetected = () => {
+  cy.get(schemaChangesDetectedBanner).should("exist");
+  cy.get(schemaChangesBackdrop).should("exist");
+};
+
+export const checkSchemaChangesDetectedCleared = () => {
+  cy.get(schemaChangesDetectedBanner).should("not.exist");
+  cy.get(schemaChangesBackdrop).should("not.exist");
+};
+
+export const clickSchemaChangesReviewButton = () => {
+  cy.get(schemaChangesReviewButton).click();
 };
