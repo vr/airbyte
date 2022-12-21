@@ -28,6 +28,8 @@ const streamNameInput = "input[data-testid='input']";
 const schemaChangesDetectedBanner = "[data-testid='schemaChangesDetected']";
 const schemaChangesReviewButton = "[data-testid='schemaChangesReviewButton']";
 const schemaChangesBackdrop = "[data-testid='schemaChangesBackdrop']";
+const nonBreakingChangesPreference = "[data-testid='nonBreakingChangesPreference']";
+const nonBreakingChangesPreferenceValue = (value: string) => `div[data-testid='nonBreakingChangesPreference-${value}']`;
 
 export const goToReplicationTab = () => {
   cy.get(replicationTab).click();
@@ -122,12 +124,14 @@ export const searchStream = (value: string) => {
   cy.get(streamNameInput).type(value);
 };
 
-export const clickSaveReplication = ({ reset = false } = {}) => {
+export const clickSaveReplication = ({ reset = false, confirm = true } = {}) => {
   cy.intercept("/api/v1/web_backend/connections/update").as("updateConnection");
 
   submitButtonClick();
 
-  confirmStreamConfigurationChangedPopup({ reset });
+  if (confirm) {
+    confirmStreamConfigurationChangedPopup({ reset });
+  }
 
   cy.wait("@updateConnection").then((interception) => {
     assert.isNotNull(interception.response?.statusCode, "200");
@@ -167,4 +171,9 @@ export const checkSchemaChangesDetectedCleared = () => {
 export const clickSchemaChangesReviewButton = () => {
   cy.get(schemaChangesReviewButton).click();
   // cy.get(schemaChangesReviewButton).should("be.disabled");
+};
+
+export const selectNonBreakingChangesPreference = (preference: "ignore" | "disable") => {
+  cy.get(nonBreakingChangesPreference).click();
+  cy.get(nonBreakingChangesPreferenceValue(preference)).click();
 };
