@@ -10,14 +10,17 @@ $sm-size: 14px;
   align-items: center;
   justify-content: center;
   padding: vars.$border-thin 0;
+  margin: vars.$spacing-xs;
   border: vars.$border-thin solid colors.$grey-100;
   border-radius: vars.$border-radius-2xs;
   color: colors.$white;
   background-color: colors.$white;
   cursor: pointer;
+
   @include mixins.focus-ring;
 
   input {
+    position: absolute;
     opacity: 0;
   }
 
