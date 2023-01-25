@@ -1,3 +1,5 @@
+import { ConnectionStatus } from "core/request/AirbyteClient";
+
 export enum CreditStatus {
   "POSITIVE" = "positive",
   "NEGATIVE_WITHIN_GRACE_PERIOD" = "negative_within_grace_period",
@@ -15,8 +17,10 @@ export interface CloudWorkspace {
   trialExpiryTimestamp?: number | null;
 }
 
-export interface CreditConsumptionByConnector {
+export interface ConnectorConsumptionRead {
   connectionId: string;
+  connectionName: string;
+  status: ConnectionStatus;
   creditsConsumed: number;
   destinationConnectionName: string;
   destinationDefinitionId: string;
@@ -30,7 +34,7 @@ export interface CreditConsumptionByConnector {
 
 export interface CloudWorkspaceUsage {
   workspaceId: string;
-  creditConsumptionByConnector: CreditConsumptionByConnector[];
+  creditConsumptionByConnection: ConnectorConsumptionRead[];
   creditConsumptionByDay: Array<{
     date: [number, number, number];
     creditsConsumed: number;

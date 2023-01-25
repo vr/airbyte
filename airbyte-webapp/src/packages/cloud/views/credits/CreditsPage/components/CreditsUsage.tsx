@@ -73,8 +73,8 @@ const CreditsUsage: React.FC = () => {
       </Card>
 
       <CardBlock title={<FormattedMessage id="credits.usagePerConnection" />} lightPadding>
-        {data?.creditConsumptionByConnector?.length ? (
-          <UsagePerConnectionTable creditConsumption={data.creditConsumptionByConnector} />
+        {data?.creditConsumptionByConnection?.length ? (
+          <UsagePerConnectionTable creditConsumption={data.creditConsumptionByConnection} />
         ) : (
           <Empty>
             <FormattedMessage id="credits.noData" />

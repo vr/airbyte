@@ -9,7 +9,7 @@ import { SortOrderEnum } from "components/EntityTable/types";
 import { Table, SortableTableHeader } from "components/ui/Table";
 
 import { useQuery } from "hooks/useQuery";
-import { CreditConsumptionByConnector } from "packages/cloud/lib/domain/cloudWorkspaces/types";
+import { ConnectorConsumptionRead } from "packages/cloud/lib/domain/cloudWorkspaces/types";
 import { useDestinationDefinitionList } from "services/connector/DestinationDefinitionService";
 import { useSourceDefinitionList } from "services/connector/SourceDefinitionService";
 
@@ -29,10 +29,10 @@ const UsageValue = styled.div`
 `;
 
 interface UsagePerConnectionTableProps {
-  creditConsumption: CreditConsumptionByConnector[];
+  creditConsumption: ConnectorConsumptionRead[];
 }
 
-type FullTableProps = CreditConsumptionByConnector & {
+type FullTableProps = ConnectorConsumptionRead & {
   creditsConsumedPercent: number;
   sourceIcon: string;
   destinationIcon: string;
